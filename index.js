@@ -28,7 +28,8 @@ function promise (driver) {
   return (chunks, ...data) => {
     const session = driver.session()
     const params = parameters(data)
-    return session.writeTransaction(tx => tx.run(query(chunks, Object.keys(params).map(key => '$' + key)), params))
+    const parts = Object.keys(params).map(key => params[key])
+    return session.writeTransaction(tx => tx.run(query(chunks, parts), params))
       .then(result => {
         session.close()
         return result
